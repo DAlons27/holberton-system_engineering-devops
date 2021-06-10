@@ -1,0 +1,1 @@
+El scrit muestra la ruta del directorio del trabajo actual.
