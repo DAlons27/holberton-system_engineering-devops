@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+#Running processes, in a user-oriented format
+
+ps -faux
