@@ -1,25 +1,38 @@
 #!/usr/bin/env bash
-# Manages 'manage_my_process'
-
-if [ "${1}" == "start" ]
-then
-    ./manage_my_process &
-    touch /var/run/my_process.pid
-    echo "$!" > /var/run/my_process.pid
-    echo "manage_my_process started"
-elif [ "${1}" == "stop" ]
-then
-    echo "manage_my_process stopped"
-    kill "$(cat /var/run/my_process.pid)"
-    rm /var/run/my_process.pid
-elif [ "${1}" == "restart" ]
-then
-    kill "$(cat /var/run/my_process.pid)"
-    rm /var/run/my_process.pid
-    ./manage_my_process &
-    touch /var/run/my_process.pid
-    echo "$!" > /var/run/my_process.pid
-    echo "manage_my_process restarted"
+# Comment to tell you what this task it about - NOT!
+#cho "$1"
+if [ "$1" == 'start' ]; then
+	./manage_my_process &
+	sudo touch /var/run/my_process.pid
+	sudo bash -c "echo '$(pgrep -f 'bash ./manage_my_process')' > /var/run/my_process.pid"
+	echo "manage_my_process started"
+elif [ "$1" == 'stop' ]; then
+#echo "here"
+# 	echo $(pgrep -f 'bash ./manage_my_process')
+	kill "$(pgrep -f 'bash ./manage_my_process')"
+	sudo rm /var/run/my_process.pid
+	echo "manage_my_process stopped"
+elif [ "$1" == 'restart' ]; then
+	kill "$(pgrep -f 'bash ./manage_my_process')"
+	sudo rm /var/run/my_process.pid
+	./manage_my_process &
+	sudo touch /var/run/my_process.pid
+	sudo bash -c "echo '$(pgrep -f 'bash ./manage_my_process')' > /var/run/my_process.pid"
+	echo "manage_my_process restarted"
 else
-    echo "Usage: manage_my_process {start|stop|restart}"
+	echo "Usage: manage_my_process {start|stop|restart}"
 fi
+#sudo bash -c "echo '$(pgrep -f 'bash ./100-process_and_pid_file')' > /var/run/myscript.pid"
+#pid="echo '$(pgrep -f 'bash ./100-process_and_pid_file')'"
+#echo $pid
+#echo $$
+#while true
+#do
+#	echo "To infinity and beyond"
+#	sleep 2
+#	trap 'echo "I hate the kill command" && sudo rm "/var/run/holbertonscript.pid" && exit' SIGTERM
+#	trap 'echo "Y U no love me?!"' SIGINT
+#	trap 'sudo rm "/var/run/holbertonscript.pid"' SIGQUIT
+#trap "exit" SIGTERM
+#trap "kill '$(pgrep -f 'bash ./100-process_and_pid_file')'" SIGQUIT
+#done
