@@ -1,0 +1,24 @@
+# Puppet script that configures a "nginx" web server in an ubuntu 16.04 machine
+
+package { 'nginx':
+  ensure => installed,
+  name   => 'nginx',
+}
+
+file { '/var/www/html/index.html':
+  content => 'Holberton School for the win!',
+  path    => '/var/www/html/index.html'
+}
+
+file_line { 'title':
+  ensure   => present,
+  path     => '/etc/nginx/sites-available/default',
+  after    => 'server_name _;',
+  line     => 'rewrite ^/redirect_me https://juanfe9118.github.io/Bass-Love/ permanent;',
+  multiple => true
+}
+
+service { 'nginx':
+  ensure  => running,
+  require => Package['nginx']
+}
