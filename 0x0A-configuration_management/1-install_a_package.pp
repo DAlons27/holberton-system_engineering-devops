@@ -1,7 +1,7 @@
 #install puppet-lint
 package { 'puppet_lint':
-    ensure   => '2.1.0',
+    ensure   => '2.5.0',
     name     => 'puppet-lint',
     provider => 'gem',
-    source   => 'http://rubygems.org',
+    source   => 'https://rubygems.org',
 }
