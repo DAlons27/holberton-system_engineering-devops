@@ -1,11 +1,35 @@
 #!/usr/bin/env bash
-# Configure Nginx on web-01 and web-02
+# Script that installs Nginx server and creates a 301 redirection
+sudo apt-get -y update
+sudo apt-get -y install nginx
+echo "Hello World!" | sudo tee /var/www/html/index.html
+sudo service nginx start
 
-apt-get update -y
-apt-get install nginx -y
-echo "Hello World!" > /var/www/html/index.nginx-debian.html
-sed -i '/listen 80 default_server/a rewrite ^/redirect_me https://www.youtube.com/watch?v=C4yDx-ykBB4 permanent;' /etc/nginx/sites-available/default
-echo "Ceci n'est pas une page" | sudo tee /var/www/html/h404.html
-sed -i '/listen 80 default_server/a error_page 404 /h404.html;\nlocation = /h404.html {\n\troot /var/www/html;\n\tinternal;\n}' /etc/nginx/sites-available/default
-sed -i "/listen 80 default_server/a \\\tadd_header X-Served-By $HOSTNAME;" /etc/nginx/sites-available/default
-service nginx restart
+FILENAME=/etc/nginx/sites-available/default
+RDRCT_WEB="https://www.youtube.com/watch?v=QH2-TGUlwu4"
+line=1
+while read strline; do
+        if [[ $strline == *"location"* ]]
+        then
+                break
+        fi
+        ((line+=1))
+done < $FILENAME
+sudo sed -i "${line}i\\\tadd_header X-Served-By $HOSTNAME;\n" $FILENAME
+((line+=1))
+RDRCT_WEB="https://www.youtube.com/watch?v=QH2-TGUlwu4"
+redirect="\n\tlocation /redirect_me {\n\t\treturn 301 ${RDRCT_WEB};\n\t}\n"
+sudo sed -i "${line}i\ ${redirect}" $FILENAME
+
+SHARE=/usr/share/nginx/html
+((line+=4))
+echo "Ceci n'est pas une page" | sudo tee "${SHARE}/404.html"
+err_page_l1="\terror_page 404 /404.html;\n"
+err_page_l2="\tlocation = /404.html {\n"
+err_page_l3="\t\troot $SHARE;\n"
+err_page_l4="\t\tinternal;\n\t}\n"
+err_page="${err_page_l1} ${err_page_l2} ${err_page_l3} ${err_page_l4}"
+sudo sed -i "${line}a\ ${err_page}" $FILENAME
+
+sudo service nginx restart
+sudo service nginx reload
