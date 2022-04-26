@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Install your load balancer
+
+CONFIGURATION="
+frontend http_front
+	 bind *:80
+	 mode http
+	 option forwardfor
+	 stats uri /haproxy?stats
+	 default_backend http_back
+backend http_back
+	balance roundrobin
+	mode http
+	server 3350-web-01 34.138.78.95:80 check
+	server 3350-web-02 54.234.9.233:80 check
+"
+
+add-apt-repository -y ppa:vbernat/haproxy-2.5
+apt-get update -y
+apt install -y haproxy
+cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.backup
+echo "$CONFIGURATION" >> /etc/haproxy/haproxy.cfg
+service haproxy start
