@@ -35,7 +35,7 @@ defaults
 
 frontend web
         bind *:80
-        bind *:443 ssl crt /etc/letsencrypt/live/www.estefanomisme.tech/fullchain.pem
+        bind *:443 ssl crt /etc/letsencrypt/live/...
         mode http
         default_backend web-server
         # redirect scheme https if !{ ssl_fc }
