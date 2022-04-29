@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Printts information about the records an IPs of a webpage
+print_info_domain_subd ()
+{
+	domain="$1"
+	if [[ $2 == '' ]]
+	then
+		subdomains=("www" "lb-01" "web-01" "web-02")
+	else
+		subdomains=("$2")
+	fi
+	for sub in "${subdomains[@]}"
+	do
+		# dig "$sub.$domain" | grep -A1 'ANSWER SECTION:'
+		dig "$sub.$domain" | awk '/ANSWER SECTION:/{getline; printf "The subdomain %s is a %s record and points to %s\n", var, $4, $5}' var="$sub"
+	done
+}
+
+if [[ $1 == '' ]]
+then
+	exit 1
+fi
+
+print_info_domain_subd "$1" "$2"
+
+exit 0
