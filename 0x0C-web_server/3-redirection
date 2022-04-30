@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
-# Configures a web server with nginx listening on port 80 and when queried on /redirect_me forwards to another webpage.
-apt-get update
-apt-get -y install nginx
-ufw allow 'Nginx HTTP'
-echo "Holberton School" > /var/www/html/index.nginx-debian.html
-sed -i '/listen 80 default_server/a rewrite ^/redirect_me https://juanfe9118.github.io/Bass-Love/ permanent;' /etc/nginx/sites-available/default
-service nginx restart
+## Install nginx web server and Redirection.
+
+### Update operating system packages.
+sudo apt-get -y update
+### Install nginx.
+sudo apt-get -y install nginx
+### Add permission modify /var/www
+sudo chown -R ubuntu /var/www
+### Change de defaul content of index.html for nginx.
+echo "Hello World" > /var/www/html/index.nginx-debian.html
+### The redirection must be a “301 Moved Permanently”.
+sudo sed -i "s/server_name _;/server_name _;\n\trewrite ^\/redirect_me https:\/\/github.com\/DAlons27 permanent;/" /etc/nginx/sites-available/default
+### Start service nginx.
+sudo service nginx restart
