@@ -1,8 +1,11 @@
-#!/usr/bin/env bash
-# Configures a web server with nginx listening on port 80 and when queried on root shows a page with the strin "Holberton School"
+#!/usr/bin/env bash                                                                                            
+## Install nginx web server                                                                                    
+
+### Update operating system packages                                                                           
 sudo apt-get -y update
+### Install nginx                                                                                              
 sudo apt-get -y install nginx
-sudo touch /var/www/html/index.html
-sudo chmod a+w /var/www/html/index.html
-echo "Hello World!" > /var/www/html/index.html
-sudo service nginx start
+### Add permission modify /var/www                                                                             sudo chown -R ubuntu /var/www
+### Change default content of index.html for nginx                                                             
+echo "Hello World" > /var/www/html/index.nginx-debian.html
+### sudo service ngnix start
