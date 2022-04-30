@@ -9,4 +9,4 @@ sudo chown -R ubuntu /var/www
 ### Change default content of index.html for nginx
 echo "Hello World" > /var/www/html/index.nginx-debian.html
 ### Service start
-sudo service ngnix start
+sudo service nginx start
