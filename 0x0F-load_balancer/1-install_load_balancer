@@ -1,23 +1,22 @@
 #!/usr/bin/env bash
-# Install your load balancer
-
-CONFIGURATION="
-frontend http_front
-	 bind *:80
-	 mode http
-	 option forwardfor
-	 stats uri /haproxy?stats
-	 default_backend http_back
-backend http_back
-	balance roundrobin
-	mode http
-	server 3350-web-01 34.138.78.95:80 check
-	server 3350-web-02 54.234.9.233:80 check
-"
-
-add-apt-repository -y ppa:vbernat/haproxy-2.5
-apt-get update -y
-apt install -y haproxy
-cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.backup
-echo "$CONFIGURATION" >> /etc/haproxy/haproxy.cfg
-service haproxy start
+## Install your load balancer
+sudo apt-get -y update
+sudo apt-get install -y --no-install-recommends software-properties-common
+sudo add-apt-repository ppa:vbernat/haproxy-2.4
+sudo apt-get install -y haproxy
+### Add "ubuntu" user as owner
+sudo chown -R ubuntu /etc/haproxy/
+### Configure HAproxy so that it send traffic to web-01 and web-02 and distribute requests using a roundrobin algorithm
+echo -e "\n# Configure frontend (http) listen all *:80 and solve with backend (my-servers)\
+\nfrontend http\
+\n\tbind *:80\
+\n\tmode http\
+\n\tdefault_backend my-servers\
+\n\
+\n# Configure all server availables for frontend (http)\
+\nbackend my-servers\
+\n\tbalance roundrobin\
+\n\tserver 3350-web-01 34.138.78.95:80 check\
+\n\tserver 3350-web-02 35.227.46.13:80 check" >> /etc/haproxy/haproxy.cfg
+### Start service.
+sudo service haproxy restart
