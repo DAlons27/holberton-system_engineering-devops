@@ -1,7 +1,7 @@
 # 0x19. Postmortem
 
 <p align="center">
-    <img src="meme.jpg" />
+    <img src="meme.JPG" />
 </p>
 
 ## Issue Summary:
